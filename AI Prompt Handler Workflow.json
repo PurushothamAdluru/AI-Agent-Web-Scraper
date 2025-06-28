@@ -1,0 +1,274 @@
+{
+  "name": "Scraper 1 copy 2",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "30dac1e6-3ff7-4be5-b06c-7faac775d33c",
+      "name": "When chat message received",
+      "webhookId": "d221362d-5c40-4f69-af15-13f1694fd2fb"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=# Overview\nYou are the personal assistant that excels at web scraping. Your job is to send the user's query to the correct tool.\n\n## Tools\n- google_maps_web_scraper: Use this tool to web scrape google. You'll want to aggregate all the results together and send a list back to the user\n- yellow_pages_web_scraper: Use this tool to web scrape yellow pages. You'll want to aggregate all the results together and send a list back to the user\n- apollo_web_scraper: Use this tool to web scrape web apollo. You'll want to aggregate all the results together and send a list back to the user\n- instagram_web_scraper: Use this tool to web scrape instagram. You'll want to aggregate all the results together and send a list back to the user\n- tiktok_web_scraper: Use this tool to web scrape tiktok. You'll want to aggregate all the results together and send a list back to the user\n\nIf the user asks you to scrape multiple sources, please combine them all in one output.\n\n## Workflow inputs\n- search: please insert the Industry. For example: plumbing, or Land Scaping\n- location: please insert the city. For example: Toronto, or Los Angeles\n- state: please insert the state/province code uppercase. For example: NY, CA\n- country: please insert the country code, lower case. For example: ca, or us\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "f6dac5b1-276e-4d19-af9b-8fd620f504e1",
+      "name": "AI Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        140,
+        160
+      ],
+      "id": "77885311-3d28-498c-9295-de5a356fef25",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        300,
+        160
+      ],
+      "id": "bedadd48-c048-4502-95ad-84b7268576ff",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool when the user wants to scrape google maps.",
+        "workflowId": {
+          "__rl": true,
+          "value": "6hF01tKGvCDNOL2l",
+          "mode": "list",
+          "cachedResultName": "Google maps v2"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "search": "={{  $fromAI(\"industry\",\"this is the industry that we're going to use for web scrape results from google maps\") }}",
+            "location": "={{  $fromAI(\"location\",\"this is the location that we're going to use for web scrape results from google maps\") }}",
+            "state": "={{  $fromAI(\"state\",\"this is the state that we're going to use for web scrape results from google maps\") }}",
+            "country": "={{  $fromAI(\"country\",\"this is the country that we're going to use for web scrape results from google maps\") }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "search",
+              "displayName": "search",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "country",
+              "displayName": "country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        160
+      ],
+      "id": "30b4c2b0-3338-4934-9473-5664a9f32324",
+      "name": "Call n8n Workflow Tool"
+    },
+    {
+      "parameters": {
+        "content": "🧠 AI Prompt Handler Workflow ",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        20
+      ],
+      "id": "4a31f4ee-1670-467c-a785-5c9256778807",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "🗨️ Chat Trigger \n\n Starts when a user sends a message (like “Scrape barbershops in Toronto”).",
+        "height": 120,
+        "width": 200,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -140
+      ],
+      "id": "0f229286-3a76-41f0-9ec7-3cd16f8fa5ca",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "🤖 AI Agent \n\n Powered by OpenAI (GPT-3.5), it understands the prompt and extracts:\n-Business type\n-City\n-Province & country",
+        "height": 180,
+        "width": 200,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -80
+      ],
+      "id": "1e590590-05ac-4744-877d-5cf5631a1866",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "🧠 Simple Memory \n\n Remembers up to 5 messages for smoother multi-step prompts.",
+        "height": 120,
+        "width": 220,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        220,
+        280
+      ],
+      "id": "fb150cd5-e9dd-4846-b5e2-b7d7e0f0b7d6",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "🧰 Workflow Trigger Tool \n\n Passes the extracted info to the scraper workflow.",
+        "height": 120,
+        "width": 220,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        580,
+        280
+      ],
+      "id": "18a0885e-7745-4cd2-acf5-a20d6c5e1d98",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call n8n Workflow Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "37478a9d-ad5e-426a-8c69-f253ba866aef",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6dd6f6873b475621fba8303fa7dff6507ea0b1f80ecd65d4c62a0ac5c528618c"
+  },
+  "id": "aQrlfACjD24U6yAz",
+  "tags": []
+}

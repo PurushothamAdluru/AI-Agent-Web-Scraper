@@ -1,0 +1,371 @@
+{
+  "name": "Google maps v2 copy 2",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"search\": \"landscaping\",\n  \"location\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"us\"\n}\n"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0bd81fdf-4990-4479-95d8-d77639a15f40",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/2Mdma1N6Fd0y3QEjR/runs?waitForFinish=300",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer xxx"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"language\": \"en\",\n    \"locationQuery\": \"{{ $json.location }},{{ $json.state }},{{ $json.country }} \",\n    \"maxCrawledPlacesPerSearch\": 50,\n    \"searchStringsArray\": [\n        \"{{ $json.search }}\"\n    ],\n    \"skipClosedPlaces\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "eb4134a0-1db4-4a2b-8ba5-f321fd221b28",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.apify.com/v2/datasets/{{ $json.data.defaultDatasetId }}/items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer xxx"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "dc47f513-8873-428e-bb47-5d7b56f59a4f",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1OGYRtJAaq1F4sbG0qZ7csDrWYVQNIaKg_VucdJW9Y1E",
+          "mode": "list",
+          "cachedResultName": "agent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OGYRtJAaq1F4sbG0qZ7csDrWYVQNIaKg_VucdJW9Y1E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1OGYRtJAaq1F4sbG0qZ7csDrWYVQNIaKg_VucdJW9Y1E/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "NAME": "={{ $json.title }}",
+            "PHONE": "={{ $json.phoneUnformatted }}",
+            "SERVICE": "={{ $('When Executed by Another Workflow').item.json.search }}",
+            "CITY": "={{ $json.city }}",
+            "URL": "={{ $json.website }}",
+            "PLATFORM": "Google Maps",
+            "ID": "={{ $json.website }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "NAME",
+              "displayName": "NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SERVICE",
+              "displayName": "SERVICE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PHONE",
+              "displayName": "PHONE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CITY",
+              "displayName": "CITY",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PLATFORM",
+              "displayName": "PLATFORM",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        660,
+        0
+      ],
+      "id": "90c4046e-3cea-40a6-9f73-5f3d8e00da7b",
+      "name": "Google Sheets"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        880,
+        0
+      ],
+      "id": "4d7c4eab-6425-4bbe-bdbe-2556f5fadbc0",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "content": "⚡Triggered by AI Agent from AI Prompt Handler Workflow\n \nThis workflow starts in the background.\n\n",
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -200
+      ],
+      "id": "a4ab8473-aa3c-4ecb-8974-1fbda04fb489",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "🌍 HTTP Request (Apify)\n\n Starts a scraper run on Apify using prompt details.",
+        "height": 140,
+        "width": 150,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -200
+      ],
+      "id": "8a460479-a2a0-4606-a158-026aace3f846",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "📥 HTTP Fetch \n\n Pulls the scraped business data (up to 50 items).",
+        "height": 140,
+        "width": 150,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        420,
+        -200
+      ],
+      "id": "690fb60a-ecd4-4566-9551-d874bcffb611",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "📊 Google Sheets \n\n Appends results like name, phone, URL, city, etc., to a live spreadsheet.",
+        "height": 140,
+        "width": 150,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -200
+      ],
+      "id": "c803fd47-7bd8-4181-bb05-95ffff86cf17",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "📦 Aggregate (Optional) \n\n Prepares the data for future use or summaries.",
+        "height": 140,
+        "width": 150,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        -200
+      ],
+      "id": "c64ba808-be4b-4878-a52d-03653a60b5a2",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "🌐Google Maps Scraper Workflow",
+        "height": 80,
+        "width": 270,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        380,
+        -320
+      ],
+      "id": "6ff0bbd7-a9b6-4fe7-9a0a-940d90a97827",
+      "name": "Sticky Note5"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "search": "landscaping",
+          "location": "New York",
+          "state": "NY",
+          "country": "us"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b8c42f33-f533-4b6a-ad95-6215eedcf122",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6dd6f6873b475621fba8303fa7dff6507ea0b1f80ecd65d4c62a0ac5c528618c"
+  },
+  "id": "4FX8u2ibPRi7x8yE",
+  "tags": []
+}
